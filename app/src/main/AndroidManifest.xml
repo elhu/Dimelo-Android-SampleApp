@@ -50,7 +50,6 @@
                 android:value="com.dimelo.sampleapp.MainActivity" />
 
         </activity>
-
     </application>
 
 </manifest>
