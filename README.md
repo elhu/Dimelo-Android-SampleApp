@@ -24,3 +24,11 @@ To built a fully functional version please edit `gradle.properties` :
 
 For more informations checkout the
 [documentation reference](http://mobile-messaging.dimelo.com)
+
+
+Crashlitics
+=========
+
+Deploy with :
+
+     ./gradlew assembleDebug crashlyticsUploadDistributionDebug
