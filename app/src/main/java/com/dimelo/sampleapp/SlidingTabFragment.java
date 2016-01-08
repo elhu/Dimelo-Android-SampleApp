@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.dimelo.sampleapp.chats.TabStart;
 import com.dimelo.sampleapp.chats.TabSupport;
 import com.dimelo.sampleapp.chats.TabTelecom;
 import com.dimelo.sampleapp.google.SlidingTabLayout;
+
+import com.dimelo.dimelosdk.main.Dimelo;
 
 public class SlidingTabFragment extends Fragment {
 

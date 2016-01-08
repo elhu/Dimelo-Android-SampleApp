@@ -1,8 +1,10 @@
 package com.dimelo.sampleapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,9 @@ import android.widget.Toast;
 
 import com.dimelo.dimelosdk.main.Dimelo;
 import com.dimelo.dimelosdk.main.DimeloConnection;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -18,6 +23,12 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static final String SENDER_ID = BuildConfig.GCM_API_KEY; // GCM ID to be defined in gradle.properties
+    private Handler mHandler;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         SlidingTabFragment mSlidingFragment = (SlidingTabFragment) supportFragmentManager.findFragmentByTag("mSlidingFragment");
-        if (mSlidingFragment == null){
+        if (mSlidingFragment == null) {
             mSlidingFragment = new SlidingTabFragment();
             mSlidingFragment.setRetainInstance(true);
             FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -40,7 +51,27 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        mHandler = new Handler();
+        startRepeatingTask();
     }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            Log.i("UnreadCount", String.valueOf(Dimelo.getInstance().getUnreadCount())); //this function can change value of mInterval.
+            mHandler.postDelayed(mStatusChecker, 1000);
+        }
+    };
+
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
 
     Dimelo.DimeloListener dimeloListener = new Dimelo.DimeloListener() {
 
@@ -50,17 +81,16 @@ public class MainActivity extends AppCompatActivity {
             // Minimal error management
 
             String message = "An error occurred";
-            if (error.statusCode == DimeloConnection.DimeloError.NO_CONNECTION_ERROR){
+            if (error.statusCode == DimeloConnection.DimeloError.NO_CONNECTION_ERROR) {
                 message = "Please check your Internet connection and try again later.";
-            }
-            else if (error.statusCode == DimeloConnection.DimeloError.TIMEOUT_ERROR){
+            } else if (error.statusCode == DimeloConnection.DimeloError.TIMEOUT_ERROR) {
                 message = "The server is not responding, please try again later";
             }
             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
         }
     };
 
-    private void setupDimelo(){
+    private void setupDimelo() {
         String secret = BuildConfig.DIMELO_SDK_SECRET; //edit in gradle.properties
         Dimelo.setup(this);
         Dimelo dimelo = Dimelo.getInstance();
@@ -79,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Registers the application with GCM servers asynchronously.
-     * <p>
+     * <p/>
      * Stores the registration ID and app versionCode in the application's
      * shared preferences.
      */
@@ -109,6 +139,46 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         task.execute(null, null, null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.dimelo.sampleapp/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.dimelo.sampleapp/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 // Vous pouvez modifier les autorisations sous Paramètres > Applications > {Application Name} > Autorisations
 

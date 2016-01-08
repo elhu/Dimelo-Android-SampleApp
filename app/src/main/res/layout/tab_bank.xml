@@ -71,6 +71,17 @@
                 android:layout_height="wrap_content"
                 android:text="BTC Exchange" />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/userIdentifier"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:editable="true"
+                android:enabled="true"
+                android:background="#ffffff"
+                android:textColor="#000000" />
+
             <TextView
                 android:layout_weight="1"
                 android:id="@+id/live_support"

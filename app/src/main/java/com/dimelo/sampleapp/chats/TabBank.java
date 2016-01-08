@@ -8,10 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ViewFlipper;
+import android.util.Log;
+
 
 import com.dimelo.dimelosdk.main.Chat;
 import com.dimelo.dimelosdk.main.Dimelo;
@@ -25,6 +30,7 @@ public class TabBank extends Fragment implements SampleDimeloTab {
 
     private Chat mDimeloChat;
     private ViewFlipper mViewFlipper;
+    private EditText userIdentifier;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -34,6 +40,7 @@ public class TabBank extends Fragment implements SampleDimeloTab {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i("UnreadCount", String.valueOf(Dimelo.getInstance().getUnreadCount()));
         return inflater.inflate(R.layout.tab_bank,container,false);
     }
 
@@ -67,6 +74,23 @@ public class TabBank extends Fragment implements SampleDimeloTab {
             }
         }
         customize();
+        userIdentifier = (EditText) view.findViewById(R.id.userIdentifier);
+        userIdentifier.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Dimelo dimelo = Dimelo.getInstance();
+                String userId = userIdentifier.getText().toString();
+                dimelo.setHostname("mobilemessaging.engagement.dimelo.info");
+                dimelo.setUserIdentifier(userId);
+                dimelo.setUserName(userId);
+            }
+        });
     }
 
     private void openChat(){
