@@ -86,7 +86,6 @@ public class TabBank extends Fragment implements SampleDimeloTab {
             public void afterTextChanged(Editable s) {
                 Dimelo dimelo = Dimelo.getInstance();
                 String userId = userIdentifier.getText().toString();
-                dimelo.setHostname("mobilemessaging.engagement.dimelo.info");
                 dimelo.setUserIdentifier(userId);
                 dimelo.setUserName(userId);
             }
